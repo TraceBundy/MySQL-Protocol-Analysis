@@ -49,7 +49,7 @@ MySQL关于该包的函数在sql_authentication.cc:send_server_handshake_packet�
 |charater set|字符集|
 |status flag |服务器状态|
 |capability flags|服务器功能标志高2字节|
-|plugn data len | 挑战数据长度|
+|plugn data len | 加密数据长度|
 |reserved|保留长度10字节|
 |plugin data|加密数据剩余部分|
 |\0|加密数据结束符|
