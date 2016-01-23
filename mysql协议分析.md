@@ -54,3 +54,56 @@ MySQL关于该包的函数在sql_authentication.cc:send_server_handshake_packet�
 |plugin data|加密数据剩余部分|
 |\0|加密数据结束符|
 |plugin name| 加密数据名称|
+
+客户端收到后返回给用户名，密码等信息
+***
+| 					| 					|		|
+|------------------|:--------------:|--------------:|
+|capability(4bytes)|max_len(4bytes)|charset(1byte);|
+|user(NUL)|:auth_len(1byte):|authdata(20bytes)|
+|database(EOF)(option)|
+
+|字段|说明|
+|--------|:-----:|
+|capability| 用来返回客户端所支持的功能标志|
+|max_len|客户端所支持的包长|
+|charset|客户端字符集|
+|user|用户名|
+|auth_len|认证数据的长度|
+|authdata|认证数据|
+|database|数据库名（可选），需要支持CLIENT_CONNECT_WITH_DB标志|
+
+客户端收到Server返回的认证结果
+***
+OK 包
+
+| 					| 					|		|
+|------------------|:--------------:|--------------:|
+|header（0x00）|affected——rows(lenenc)|last_insert_id(lenenc)|
+|status flags(2bytes)|warnings(2bytes)|info(EOF)(option)|
+
+[lenenc说明](https://dev.mysql.com/doc/internals/en/integer.html#packet-Protocol::LengthEncodedInteger)
+
+|字段|说明|
+|--------|:-----:|
+|header| 0x00|
+|affected rows|影响行数（）|
+|insert-id|inser id值|
+|status|服务器状态|
+|warnings|警告计数|
+|info|服务器消息|
+
+ERROR包
+
+| 					| 					|		|
+|------------------|:--------------:|--------------:|
+|header（0xff）|error_code(2bytes)|sql_state_marker(1byte)|
+|sql_state(5bytes)|error_message(EOF)|
+
+|字段|说明|
+|--------|:-----:|
+|header| 0x00|
+|error code|错误代码|
+|sql_state_marker|错误状态标志（#）|
+|sql_state|服务器状态|
+|errpr_message|错误信息|
